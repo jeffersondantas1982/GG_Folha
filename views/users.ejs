@@ -1,0 +1,75 @@
+<%- include('header') %>
+
+    <div class="mb-8 flex justify-between items-end">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-800">Gestão de Usuários</h1>
+            <p class="text-slate-500">Controle quem tem acesso ao sistema de ponto.</p>
+        </div>
+        <a href="/register-user" class="btn-primary">Novo Usuário</a>
+    </div>
+
+    <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider">
+                        <th class="px-6 py-4">Usuário</th>
+                        <th class="px-6 py-4 text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <% users.forEach(u=> { %>
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div
+                                        class="w-10 h-10 bg-slate-100 text-slate-600 rounded-lg flex items-center justify-center font-bold">
+                                        <%= (u.usuario || '?' ).charAt(0).toUpperCase() %>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-slate-900">
+                                            <%= u.usuario %>
+                                        </div>
+                                        <% if (u.usuario===currentUser) { %>
+                                            <span
+                                                class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Você</span>
+                                            <% } %>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center justify-center space-x-2">
+                                    <a href="/users/edit/<%= u.usuario %>" title="Editar"
+                                        class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                            </path>
+                                        </svg>
+                                    </a>
+                                    <% if (u.usuario !==currentUser) { %>
+                                        <form action="/users/delete/<%= u.usuario %>" method="POST"
+                                            onsubmit="return confirm('Excluir este usuário? Isto removerá o acesso permanentemente.');"
+                                            class="inline">
+                                            <button type="submit" title="Excluir"
+                                                class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                                    </path>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                        <% } %>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <%- include('footer') %>

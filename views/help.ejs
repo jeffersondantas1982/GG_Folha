@@ -1,0 +1,218 @@
+<%- include('header') %>
+
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="mb-12 text-center">
+            <h1 class="text-4xl font-black text-slate-800 uppercase tracking-tight mb-4">Manual do Usuário</h1>
+            <p class="text-slate-500 text-lg">Guia completo para utilização e gestão do sistema GG - Gestão de Gente.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
+            <!-- Sidebar Navigation -->
+            <div class="lg:col-span-1 space-y-2">
+                <button onclick="showSection('dashboard')"
+                    class="w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 nav-btn bg-brand-50 text-brand-700"
+                    id="btn-dashboard">
+                    <span>📊</span> Dashboard
+                </button>
+                <button onclick="showSection('cadastro')"
+                    class="w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 nav-btn text-slate-500 hover:bg-slate-50"
+                    id="btn-cadastro">
+                    <span>📝</span> Cadastro
+                </button>
+                <button onclick="showSection('ferias')"
+                    class="w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 nav-btn text-slate-500 hover:bg-slate-50"
+                    id="btn-ferias">
+                    <span>🌴</span> Férias & Desligados
+                </button>
+                <button onclick="showSection('impressao')"
+                    class="w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 nav-btn text-slate-500 hover:bg-slate-50"
+                    id="btn-impressao">
+                    <span>🖨️</span> Impressão
+                </button>
+                <button onclick="showSection('config')"
+                    class="w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 nav-btn text-slate-500 hover:bg-slate-50"
+                    id="btn-config">
+                    <span>⚙️</span> Configurações
+                </button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="lg:col-span-3">
+                <!-- Dashboard Section -->
+                <div id="section-dashboard" class="help-section space-y-8 animate-[fadeIn_0.4s_ease-out]">
+                    <div class="card p-8 bg-white border-brand-100">
+                        <h2 class="text-2xl font-black text-slate-800 mb-6 flex items-center gap-4">
+                            <span
+                                class="w-10 h-10 bg-brand-100 text-brand-600 rounded-xl flex items-center justify-center text-lg">01</span>
+                            Entendendo o Dashboard
+                        </h2>
+                        <div class="prose prose-slate max-w-none space-y-4 text-slate-600">
+                            <p>O Dashboard é o controle central do sistema. Aqui você tem uma visão em tempo real da sua
+                                equipe.</p>
+                            <ul class="space-y-3">
+                                <li><b class="text-slate-800">Cards de Resumo:</b> Mostram o total de profissionais,
+                                    quantos estão ativos, em férias e inativos (desligados).</li>
+                                <li><b class="text-slate-800">Filtros Dinâmicos:</b> Use os menus de Unidade, Cargo e
+                                    Escala para refinar a lista de colaboradores instantaneamente.</li>
+                                <li><b class="text-slate-800">Pesquisa:</b> Digite o nome ou matrícula no campo de busca
+                                    para encontrar alguém rapidamente. O sistema destaca o termo encontrado em amarelo.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cadastro Section -->
+                <div id="section-cadastro" class="help-section hidden space-y-8">
+                    <div class="card p-8 bg-white">
+                        <h2 class="text-2xl font-black text-slate-800 mb-6 flex items-center gap-4">
+                            <span
+                                class="w-10 h-10 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-lg">02</span>
+                            Gestão de Colaboradores
+                        </h2>
+                        <div class="prose prose-slate max-w-none space-y-4 text-slate-600">
+                            <p>Para manter o sistema atualizado, siga estas orientações de cadastro:</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 not-prose">
+                                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                    <b class="block text-slate-800 mb-1">Novo Cadastro</b>
+                                    Clique em "+ Novo Colaborador", preencha os dados e selecione a Escala correta.
+                                </div>
+                                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                    <b class="block text-slate-800 mb-1">Edição</b>
+                                    Use o ícone de lápis na tabela para atualizar dados, trocar de unidade ou alterar o
+                                    status.
+                                </div>
+                            </div>
+                            <p class="text-sm italic">Dica: Formatos de data e telefone são aplicados automaticamente
+                                enquanto você digita.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Férias Section -->
+                <div id="section-ferias" class="help-section hidden space-y-8">
+                    <div class="card p-8 bg-white border-yellow-100">
+                        <h2 class="text-2xl font-black text-slate-800 mb-6 flex items-center gap-4">
+                            <span
+                                class="w-10 h-10 bg-yellow-100 text-yellow-600 rounded-xl flex items-center justify-center text-lg">03</span>
+                            Férias e Desligados
+                        </h2>
+                        <div class="prose prose-slate max-w-none space-y-6 text-slate-600">
+                            <div class="space-y-2">
+                                <h3 class="text-lg font-bold text-slate-800">🌴 Controle de Férias</h3>
+                                <p>Ao marcar um colaborador como <b>FÉRIAS</b> na edição:</p>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>Ele ganha um selo visual no Dashboard.</li>
+                                    <li>É removido automaticamente da impressão mensal de folhas.</li>
+                                    <li>Pode ser visto na "Lista de Férias" para conferência.</li>
+                                </ul>
+                            </div>
+                            <hr class="border-slate-100">
+                            <div class="space-y-2">
+                                <h3 class="text-lg font-bold text-slate-800">👥 Gestão de Inativos (Desligados)</h3>
+                                <p>Colaboradores desligados devem ser marcados como <b>INATIVO</b>. Eles saem do painel
+                                    principal para a "Lista de Inativos", onde podem ser reativados em caso de
+                                    readmissão.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Impressão Section -->
+                <div id="section-impressao" class="help-section hidden space-y-8">
+                    <div class="card p-8 bg-white border-blue-100">
+                        <h2 class="text-2xl font-black text-slate-800 mb-6 flex items-center gap-4">
+                            <span
+                                class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-lg">04</span>
+                            Impressão de Folhas
+                        </h2>
+                        <div class="prose prose-slate max-w-none space-y-4 text-slate-600">
+                            <p>O sistema gera folhas de ponto personalizadas com o logotipo e dados da sua instituição.
+                            </p>
+                            <div class="space-y-4">
+                                <div class="flex gap-4">
+                                    <div class="text-xl">📄</div>
+                                    <div>
+                                        <b class="text-slate-800 block">Impressão Individual</b>
+                                        Clique no ícone de impressora na linha do colaborador.
+                                    </div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="text-xl">🗂️</div>
+                                    <div>
+                                        <b class="text-slate-800 block">Impressão em Lote</b>
+                                        Clique em "Imprimir Lista" no topo. Você pode filtrar por unidade para gerar
+                                        apenas as folhas daquele setor.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configurações Section -->
+                <div id="section-config" class="help-section hidden space-y-8">
+                    <div class="card p-8 bg-white border-slate-200">
+                        <h2 class="text-2xl font-black text-slate-800 mb-6 flex items-center gap-4">
+                            <span
+                                class="w-10 h-10 bg-slate-100 text-slate-600 rounded-xl flex items-center justify-center text-lg">05</span>
+                            Configurações e Logotipo
+                        </h2>
+                        <div class="prose prose-slate max-w-none space-y-4 text-slate-600">
+                            <p>Gerencie a identidade visual do sistema em "Configurações" (ícone de engrenagem no topo):
+                            </p>
+                            <ul class="space-y-3">
+                                <li><b class="text-slate-800">Logotipo:</b> Faça upload da imagem (JPEG/PNG). Ela
+                                    aparecerá automaticamente no cabeçalho das folhas.</li>
+                                <li><b class="text-slate-800">Dados da Instituição:</b> Mantenha o Nome, CNPJ e Endereço
+                                    sempre atualizados para que os relatórios sejam válidos.</li>
+                                <li><b class="text-slate-800">Listas do Sistema:</b> Adicione ou remova Unidades, Cargos
+                                    e Escalas conforme a necessidade da instituição.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(id) {
+            // Hide all sections
+            document.querySelectorAll('.help-section').forEach(s => s.classList.add('hidden'));
+            // Remove active styles from all buttons
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('bg-brand-50', 'text-brand-700');
+                b.classList.add('text-slate-500', 'hover:bg-slate-50');
+            });
+
+            // Show selected section
+            document.getElementById('section-' + id).classList.remove('hidden');
+            // Add active styles to selected button
+            const btn = document.getElementById('btn-' + id);
+            btn.classList.add('bg-brand-50', 'text-brand-700');
+            btn.classList.remove('text-slate-500', 'hover:bg-slate-50');
+
+            // Scroll to top of content on mobile
+            if (window.innerWidth < 1024) {
+                document.getElementById('section-' + id).scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <%- include('footer') %>

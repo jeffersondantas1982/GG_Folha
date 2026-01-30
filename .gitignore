@@ -1,0 +1,9 @@
+node_modules/
+.env
+*.log
+backup/
+public/img/logo_*
+public/img/logo-*
+public/img/uploads/
+INSTALADORES/
+DOCUMENTAÇÃO/

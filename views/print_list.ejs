@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Colaboradores</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            @page {
+                size: A4;
+                margin: 15mm;
+            }
+
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-white p-8">
+
+    <!-- Print Button -->
+    <div class="no-print mb-6 text-center">
+        <button onclick="window.print()"
+            class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700">
+            Imprimir Lista
+        </button>
+    </div>
+
+    <!-- Header -->
+    <div class="text-center mb-8 border-b-2 border-gray-300 pb-4">
+        <% if (institution.logotipo) { %>
+            <div class="flex justify-center mb-4">
+                <img src="<%= institution.logotipo %>" alt="Logo" class="max-h-16 object-contain">
+            </div>
+            <% } %>
+                <h1 class="text-2xl font-bold text-gray-900 uppercase">Lista de Colaboradores</h1>
+                <p class="text-gray-600">
+                    <%= institutionName %> - Recursos Humanos
+                </p>
+                <p class="text-sm text-gray-500">Gerado em: <%= new Date().toLocaleDateString('pt-BR') %>
+                </p>
+    </div>
+
+    <!-- Table -->
+    <table class="w-full border-collapse text-sm">
+        <thead>
+            <tr class="bg-gray-100 border-b-2 border-gray-400">
+                <th class="border border-gray-300 px-3 py-2 text-left font-bold">Nome</th>
+                <th class="border border-gray-300 px-3 py-2 text-center font-bold">Matrícula</th>
+                <th class="border border-gray-300 px-3 py-2 text-left font-bold">Cargo</th>
+                <th class="border border-gray-300 px-3 py-2 text-left font-bold">Lotação</th>
+                <th class="border border-gray-300 px-3 py-2 text-center font-bold">CH (h/s)</th>
+                <th class="border border-gray-300 px-3 py-2 text-left font-bold">Telefone</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% professionals.forEach(p=> { %>
+                <tr class="hover:bg-gray-50">
+                    <td class="border border-gray-300 px-3 py-2">
+                        <%= p.nome || '-' %>
+                    </td>
+                    <td class="border border-gray-300 px-3 py-2 text-center font-mono">
+                        <%= p.matricula || '-' %>
+                    </td>
+                    <td class="border border-gray-300 px-3 py-2">
+                        <%= p.cargo || '-' %>
+                    </td>
+                    <td class="border border-gray-300 px-3 py-2 text-xs">
+                        <%= p.unidade_lotacao || '-' %>
+                    </td>
+                    <td class="border border-gray-300 px-3 py-2 text-center">
+                        <%= p.carga_horaria || '-' %>
+                    </td>
+                    <td class="border border-gray-300 px-3 py-2">
+                        <%= p.telefone || '-' %>
+                    </td>
+                </tr>
+                <% }) %>
+        </tbody>
+    </table>
+
+    <!-- Footer -->
+    <div class="mt-8 pt-4 border-t border-gray-300 text-center text-xs text-gray-500">
+        <p>Total: <%= professionals.length %> colaborador(es) cadastrado(s)</p>
+        <p class="mt-2">Sistema GG - Gestão de Gente | <%= institutionName %>
+        </p>
+    </div>
+
+</body>
+
+</html>

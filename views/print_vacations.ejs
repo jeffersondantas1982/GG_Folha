@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Férias</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            .no-print {
+                display: none;
+            }
+
+            body {
+                background: white;
+            }
+
+            .print-area {
+                border: none;
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+            }
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 4px 8px;
+            text-align: left;
+            font-size: 11px;
+        }
+
+        th {
+            background-color: #f3f4f6;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 p-8">
+
+    <div class="no-print max-w-4xl mx-auto mb-6 flex justify-between items-center bg-white p-4 rounded-lg shadow">
+        <h1 class="text-xl font-bold">Relatório de Colaboradores em Férias</h1>
+        <div class="space-x-2">
+            <button onclick="window.print()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Imprimir
+                Lista</button>
+            <button onclick="window.close()"
+                class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Fechar</button>
+        </div>
+    </div>
+
+    <div class="print-area bg-white max-w-4xl mx-auto p-8 shadow-lg border border-gray-200">
+        <!-- Institution Header -->
+        <div class="flex items-center mb-6 border-b-2 border-black pb-4">
+            <div class="w-24 flex-shrink-0">
+                <% if (institution.logotipo) { %>
+                    <img src="<%= institution.logotipo %>" alt="Logo" class="max-h-16 object-contain"
+                        onerror="this.style.display='none'">
+                    <% } %>
+            </div>
+            <div class="flex-1 text-center pr-24">
+                <h1 class="font-bold text-lg uppercase">
+                    <%= institution.nome %>
+                </h1>
+                <p class="text-xs">CNPJ: <%= institution.cnpj %>
+                </p>
+                <p class="text-[10px]">
+                    <%= institution.endereco %>
+                </p>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h2 class="text-center font-bold text-md uppercase underline">LISTAGEM DE COLABORADORES EM FÉRIAS</h2>
+            <% if (filterUnidade) { %>
+                <p class="text-center text-xs mt-1 font-bold">UNIDADE: <%= filterUnidade %>
+                </p>
+                <% } %>
+                    <p class="text-right text-[10px] mt-2">Data de Geração: <%= new Date().toLocaleDateString('pt-BR')
+                            %> às <%= new Date().toLocaleTimeString('pt-BR', {hour: '2-digit' , minute:'2-digit'}) %>
+                    </p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="w-12">MATR.</th>
+                    <th>NOME COMPLETO</th>
+                    <th>CARGO / FUNÇÃO</th>
+                    <th>UNIDADE DE LOTAÇÃO</th>
+                    <th class="w-32 text-center">ASSINATURA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (professionals.length===0) { %>
+                    <tr>
+                        <td colspan="5" class="text-center py-8 text-gray-400 italic">Nenhum colaborador em férias nesta
+                            seleção.</td>
+                    </tr>
+                    <% } else { %>
+                        <% professionals.sort((a,b)=> String(a.nome).localeCompare(String(b.nome))).forEach(p => {
+                            %>
+                            <tr style="height: 35px;">
+                                <td class="text-center font-mono">
+                                    <%= p.matricula %>
+                                </td>
+                                <td class="font-bold uppercase">
+                                    <%= p.nome %>
+                                </td>
+                                <td class="text-[10px] uppercase">
+                                    <%= p.cargo %>
+                                </td>
+                                <td class="text-[10px] uppercase">
+                                    <%= p.unidade_lotacao %>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <% }) %>
+                                <% } %>
+            </tbody>
+        </table>
+
+        <div class="mt-8 text-[9px] text-gray-500 font-bold italic text-center">
+            TOTAL DE COLABORADORES EM FÉRIAS: <%= professionals.length %>
+        </div>
+    </div>
+
+</body>
+
+</html>

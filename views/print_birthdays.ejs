@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Aniversariantes do Mês - <%= monthName %>
+    </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            @page {
+                size: A4;
+                margin: 15mm;
+            }
+
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-white p-8">
+
+    <div class="no-print mb-6 text-center">
+        <button onclick="window.print()"
+            class="bg-amber-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-700 shadow-lg">
+            Imprimir Lista de Aniversariantes
+        </button>
+    </div>
+
+    <div class="text-center mb-10 border-b-4 border-amber-100 pb-6">
+        <% if (institution.logotipo) { %>
+            <div class="flex justify-center mb-4">
+                <img src="<%= institution.logotipo %>" alt="Logo" class="max-h-16 object-contain">
+            </div>
+            <% } %>
+                <h1 class="text-3xl font-black text-amber-700 uppercase tracking-tighter">🎂 Aniversariantes do Mês</h1>
+                <% let displayYear=new Date().getFullYear(); if (new Date().getMonth()===11 && monthName==="JANEIRO" ) {
+                    displayYear++; } %>
+                    <p class="text-xl text-slate-500 font-medium">
+                        <%= monthName %> / <%= displayYear %>
+                    </p>
+                    <p class="text-xs text-slate-400 mt-2">
+                        <%= institutionName %> - Valorizando nossa Equipe
+                    </p>
+    </div>
+
+    <table class="w-full border-collapse">
+        <thead>
+            <tr class="bg-amber-50">
+                <th class="border border-amber-200 px-4 py-3 text-center w-20 font-bold text-amber-800">Dia</th>
+                <th class="border border-amber-200 px-4 py-3 text-left font-bold text-amber-800">Nome do Colaborador
+                </th>
+                <th class="border border-amber-200 px-4 py-3 text-left font-bold text-amber-800">Cargo</th>
+                <th class="border border-amber-200 px-4 py-3 text-left font-bold text-amber-800">Unidade</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (aniversariantes.length===0) { %>
+                <tr>
+                    <td colspan="4" class="border border-amber-200 px-4 py-8 text-center text-slate-400 italic">
+                        Nenhum aniversariante registrado para este mês.
+                    </td>
+                </tr>
+                <% } else { %>
+                    <% aniversariantes.forEach(p=> { %>
+                        <tr class="hover:bg-amber-50/30 transition-colors">
+                            <td class="border border-amber-200 px-4 py-3 text-center font-bold text-amber-600 text-lg">
+                                <%= String(p.dia).padStart(2, '0' ) %>
+                            </td>
+                            <td class="border border-amber-200 px-4 py-3 font-bold text-slate-800 uppercase">
+                                <%= p.nome %>
+                            </td>
+                            <td class="border border-amber-200 px-4 py-3 text-slate-600 uppercase text-xs">
+                                <%= p.cargo || '-' %>
+                            </td>
+                            <td class="border border-amber-200 px-4 py-3 text-slate-500 uppercase text-[10px]">
+                                <%= p.unidade || '-' %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                            <% } %>
+        </tbody>
+    </table>
+
+    <div class="mt-12 pt-8 border-t border-slate-100 text-center text-slate-400 italic text-[10px]">
+        <p>Documento gerado em <%= new Date().toLocaleDateString('pt-BR') %> às <%= new
+                    Date().toLocaleTimeString('pt-BR') %>
+        </p>
+        <p class="mt-2 font-bold text-amber-700/50 uppercase">GG - Gestão de Gente | <%= institutionName %>
+        </p>
+    </div>
+
+</body>
+
+</html>

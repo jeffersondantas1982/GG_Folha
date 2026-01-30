@@ -1,0 +1,591 @@
+<%- include('header') %>
+
+    <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-800">Painel de Gestão</h1>
+            <p class="text-slate-500">Visão geral da equipe e controle de frequência.</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <a href="/vacations/print" target="_blank"
+                class="btn-secondary inline-flex items-center gap-2 border-brand-200">
+                <span>🌴</span>
+                Férias (<%= stats.ferias %>)
+            </a>
+            <a href="/print-list" target="_blank" class="btn-secondary inline-flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                    </path>
+                </svg>
+                Imprimir Lista
+            </a>
+            <a href="/register" class="btn-primary inline-flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Novo Colaborador
+            </a>
+        </div>
+    </div>
+
+    <!-- Dashboard Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <!-- Total Card -->
+        <div class="card bg-gradient-to-br from-brand-600 to-brand-700 text-white border-none relative overflow-hidden">
+            <div class="relative z-10">
+                <div class="text-brand-100 text-xs font-bold uppercase tracking-widest mb-1">Total de Profissionais
+                </div>
+                <div class="text-5xl font-bold mb-1">
+                    <%= stats.total %>
+                </div>
+                <div
+                    class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-brand-100 font-bold uppercase tracking-wider">
+                    <span>Ativos: <%= stats.ativos %></span>
+                    <span class="opacity-30">|</span>
+                    <span>Férias: <%= stats.ferias %></span>
+                    <span class="opacity-30">|</span>
+                    <a href="/inactives"
+                        class="hover:text-white transition-colors underline decoration-brand-400">Inativos: <%=
+                            stats.inativos %></a>
+                </div>
+            </div>
+            <svg class="absolute -right-4 -bottom-4 w-32 h-32 text-white opacity-10" fill="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                    d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z">
+                </path>
+            </svg>
+        </div>
+
+        <!-- Per Unit -->
+        <div class="card bg-white">
+            <h3 class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-4">Por Unidade</h3>
+            <div class="space-y-3">
+                <% Object.entries(stats.porUnidade).sort((a,b)=> b[1]-a[1]).slice(0, 3).forEach(([unidade, count]) => {
+                    %>
+                    <div class="flex justify-between items-center group">
+                        <span class="text-sm font-semibold text-slate-700 uppercase line-clamp-1 flex-1 pr-2">
+                            <%= unidade %>
+                        </span>
+                        <span
+                            class="bg-brand-50 text-brand-600 px-2 py-0.5 rounded-lg text-xs font-bold ring-1 ring-brand-100">
+                            <%= count %>
+                        </span>
+                    </div>
+                    <% }) %>
+                        <% if (Object.keys(stats.porUnidade).length> 3) { %>
+                            <div class="text-[10px] text-slate-400 italic text-center pt-1">+ <%=
+                                    Object.keys(stats.porUnidade).length - 3 %> outras</div>
+                            <% } %>
+            </div>
+        </div>
+
+        <!-- Aniversariantes -->
+        <div class="card bg-white border-brand-100 ring-1 ring-brand-50 relative overflow-hidden group">
+            <div id="birthdayDataRaw" style="display:none" data-atual-nome='<%- stats.mesAtualNome %>'
+                data-atual-lista='<%- JSON.stringify(stats.aniversariantes) %>'
+                data-proximo-nome='<%- stats.proximoMesNome %>'
+                data-proximo-lista='<%- JSON.stringify(stats.aniversariantesProximo) %>'>
+            </div>
+
+            <div class="flex justify-between items-start relative z-10">
+                <h3 class="text-slate-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                    <span class="text-base text-amber-500">🎂</span> Parabéns do Mês
+                </h3>
+                <div class="flex items-center gap-1">
+                    <button onclick="openBirthdayModal('atual')"
+                        title="Ver aniversariantes de <%= stats.mesAtualNome %>"
+                        class="p-1.5 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                            </path>
+                        </svg>
+                    </button>
+                    <button onclick="openBirthdayModal('proximo')"
+                        title="Ver aniversariantes de <%= stats.proximoMesNome %>"
+                        class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    <a href="/print-birthdays" target="_blank" title="Imprimir lista atual"
+                        class="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                            </path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="mt-4 flex items-center justify-between relative z-10">
+                <div>
+                    <div class="text-4xl font-black text-slate-800 tracking-tighter">
+                        <%= stats.aniversariantes.length %>
+                    </div>
+                    <div class="text-[10px] font-bold text-amber-600 uppercase">Colaboradores</div>
+                </div>
+                <div class="bg-amber-100 p-2 rounded-xl text-amber-600 group-hover:scale-110 transition-transform">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.703 2.703 0 01-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 01-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9V9a2 2 0 00-2-2H8a2 2 0 00-2 2v3h12z">
+                        </path>
+                    </svg>
+                </div>
+            </div>
+
+            <p class="mt-4 text-[11px] text-slate-400 italic border-t border-slate-50 pt-2 relative z-10">
+                Aniversariantes de <%= stats.mesAtualNome %>
+            </p>
+        </div>
+
+        <!-- Per Role -->
+        <div class="card bg-white">
+            <h3 class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-4">Principais Cargos</h3>
+            <div class="space-y-3">
+                <% Object.entries(stats.porCargo).sort((a,b)=> b[1]-a[1]).slice(0, 3).forEach(([cargo, count]) => { %>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-semibold text-slate-700 uppercase line-clamp-1 flex-1 pr-2">
+                            <%= cargo %>
+                        </span>
+                        <span
+                            class="bg-accent-50 text-accent-600 px-2 py-0.5 rounded-lg text-xs font-bold ring-1 ring-accent-100">
+                            <%= count %>
+                        </span>
+                    </div>
+                    <% }) %>
+                        <% if (Object.keys(stats.porCargo).length> 3) { %>
+                            <div class="text-[10px] text-slate-400 italic text-center pt-1">+ <%=
+                                    Object.keys(stats.porCargo).length - 3 %> outros cargos</div>
+                            <% } %>
+            </div>
+        </div>
+
+        <!-- Per Shift (Escala) -->
+        <div class="card bg-white lg:col-span-2">
+            <h3 class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-4">Por Escala de Trabalho</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <% Object.entries(stats.porEscala).sort((a,b)=> b[1]-a[1]).forEach(([escala, count]) => { %>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                        <div class="text-[10px] font-bold text-slate-400 uppercase mb-1 line-clamp-1">
+                            <%= escala %>
+                        </div>
+                        <div class="text-2xl font-black text-slate-700">
+                            <%= count %>
+                        </div>
+                    </div>
+                    <% }) %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Birthday List -->
+    <div id="birthdayModal" class="hidden fixed inset-0 z-[100] overflow-y-auto" aria-labelledby="modal-title"
+        role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-slate-900 bg-opacity-75 transition-opacity" aria-hidden="true"
+                onclick="toggleBirthdayModal(false)"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div
+                class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full border border-slate-200">
+                <div id="modalHeader" class="px-6 py-4 flex justify-between items-center transition-colors">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span>🎂</span> <span id="modalTitle">Aniversariantes</span>
+                    </h3>
+                    <button onclick="toggleBirthdayModal(false)"
+                        class="text-white hover:rotate-90 transition-transform">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="bg-white px-6 py-4 max-h-[60vh] overflow-y-auto">
+                    <div id="birthdayList" class="space-y-4">
+                        <!-- Content via JS -->
+                    </div>
+                </div>
+                <div class="bg-slate-50 px-6 py-4 flex justify-end gap-3">
+                    <button onclick="toggleBirthdayModal(false)" class="btn-secondary">Fechar</button>
+                    <a id="modalPrintBtn" href="/print-birthdays" target="_blank"
+                        class="btn-primary flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                            </path>
+                        </svg>
+                        <span>Imprimir</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openBirthdayModal(mes) {
+            const raw = document.getElementById('birthdayDataRaw');
+
+            const data = {
+                atual: {
+                    mNum: "<%= stats.mesAtualNum %>",
+                    nome: raw.dataset.atualNome,
+                    cor: "bg-amber-500",
+                    badge: "bg-amber-100 text-amber-600",
+                    hover: "hover:bg-amber-50",
+                    label: "Parabéns!",
+                    lista: JSON.parse(raw.dataset.atualLista)
+                },
+                proximo: {
+                    mNum: "<%= stats.proximoMesNum %>",
+                    nome: raw.dataset.proximoNome,
+                    cor: "bg-indigo-500",
+                    badge: "bg-indigo-100 text-indigo-600",
+                    hover: "hover:bg-indigo-50",
+                    label: "Próximo mês",
+                    lista: JSON.parse(raw.dataset.proximoLista)
+                }
+            }[mes];
+
+            const listContainer = document.getElementById('birthdayList');
+            const modalHeader = document.getElementById('modalHeader');
+            const modalTitle = document.getElementById('modalTitle');
+            const printBtn = document.getElementById('modalPrintBtn');
+
+            modalTitle.innerText = `Aniversariantes de ${data.nome}`;
+            modalHeader.className = `px-6 py-4 flex justify-between items-center transition-colors ${data.cor}`;
+
+            // Set Print link with month parameter
+            printBtn.href = `/print-birthdays?month=${data.mNum}`;
+            printBtn.style.display = 'flex'; // Always show now
+
+            listContainer.innerHTML = '';
+            if (data.lista.length === 0) {
+                listContainer.innerHTML = `<p class="text-center text-slate-400 py-8 italic">Ninguém faz aniversário em ${data.nome}.</p>`;
+            } else {
+                data.lista.forEach(niver => {
+                    const item = document.createElement('div');
+                    item.className = `flex justify-between items-center p-3 bg-slate-50 rounded-xl group ${data.hover} transition-colors`;
+                    item.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 ${data.badge} rounded-lg flex items-center justify-center font-bold text-sm">
+                                ${niver.dia}
+                            </div>
+                            <span class="font-bold text-slate-700 uppercase">${niver.nome}</span>
+                        </div>
+                        <span class="text-[10px] font-bold ${data.badge} uppercase bg-white px-2 py-1 rounded-md shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">${data.label}</span>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            }
+
+            toggleBirthdayModal(true);
+        }
+
+        function toggleBirthdayModal(show) {
+            const modal = document.getElementById('birthdayModal');
+            if (show) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        }
+    </script>
+
+    <!-- Search and Table Section -->
+    <div class="mb-4 space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <h2 class="text-xl font-bold text-slate-800">Lista da Equipe</h2>
+
+            <form id="searchForm" action="/" method="GET" class="w-full max-w-md relative">
+                <input type="text" name="search" value="<%= searchQuery %>"
+                    placeholder="Pesquisar por nome, matrícula, cargo ou lotação..."
+                    class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-400 focus:border-transparent outline-none transition-all shadow-sm">
+                <svg class="w-5 h-5 absolute left-3 top-3 text-slate-400" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <% if (searchQuery) { %>
+                    <a href="/" class="absolute right-3 top-3 text-slate-400 hover:text-red-500">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12">
+                            </path>
+                        </svg>
+                    </a>
+                    <% } %>
+
+                        <!-- Hidden inputs to preserve filters during search -->
+                        <input type="hidden" name="unidade" value="<%= filters.unidade %>">
+                        <input type="hidden" name="cargo" value="<%= filters.cargo %>">
+                        <input type="hidden" name="escala" value="<%= filters.escala %>">
+            </form>
+        </div>
+
+        <!-- Filters Row -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="relative group">
+                <select onchange="applyFilter('unidade', this.value)"
+                    class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-400 outline-none transition-all shadow-sm appearance-none cursor-pointer text-sm font-medium text-slate-600">
+                    <option value="">TODAS AS UNIDADES</option>
+                    <% settings.unidade_lotacao.sort().forEach(u=> { %>
+                        <option value="<%= u %>" <%=filters.unidade===u ? 'selected' : '' %>><%= u %>
+                        </option>
+                        <% }) %>
+                </select>
+                <div class="absolute left-3 top-2.5 text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                        </path>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="relative">
+                <select onchange="applyFilter('cargo', this.value)"
+                    class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-400 outline-none transition-all shadow-sm appearance-none cursor-pointer text-sm font-medium text-slate-600">
+                    <option value="">TODOS OS CARGOS</option>
+                    <% settings.cargo.sort().forEach(c=> { %>
+                        <option value="<%= c %>" <%=filters.cargo===c ? 'selected' : '' %>><%= c %>
+                        </option>
+                        <% }) %>
+                </select>
+                <div class="absolute left-3 top-2.5 text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="relative">
+                <select onchange="applyFilter('escala', this.value)"
+                    class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-400 outline-none transition-all shadow-sm appearance-none cursor-pointer text-sm font-medium text-slate-600">
+                    <option value="">TODAS AS ESCALAS</option>
+                    <% settings.escala.sort().forEach(e=> { %>
+                        <option value="<%= e %>" <%=filters.escala===e ? 'selected' : '' %>><%= e %>
+                        </option>
+                        <% }) %>
+                </select>
+                <div class="absolute left-3 top-2.5 text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function applyFilter(name, value) {
+            const url = new URL(window.location.href);
+            if (value) url.searchParams.set(name, value);
+            else url.searchParams.delete(name);
+
+            // Reset page when filtering
+            url.searchParams.set('page', '1');
+            window.location.href = url.toString();
+        }
+
+        function openVacationModal(name) {
+            const modal = document.getElementById('vacationModal');
+            const content = document.getElementById('vacationModalContent');
+            document.getElementById('vacationEmployeeName').innerText = name;
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        }
+
+        function closeVacationModal() {
+            const modal = document.getElementById('vacationModal');
+            const content = document.getElementById('vacationModalContent');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Global listener for actions
+        document.addEventListener('DOMContentLoaded', () => {
+            // Highlight search results
+            const query = '<%= searchQuery %>'.toLowerCase().trim();
+            if (query) {
+                const elementsToSearch = document.querySelectorAll('td .font-bold, td .text-sm, td .text-xs');
+                elementsToSearch.forEach(el => {
+                    const text = el.innerText;
+                    if (text.toLowerCase().includes(query)) {
+                        const regex = new RegExp(`(${query})`, 'gi');
+                        el.innerHTML = text.replace(regex, '<mark class="bg-amber-200 text-amber-900 rounded px-0.5">$1</mark>');
+                    }
+                });
+            }
+
+            // Global listener for print buttons to handle vacation alerts
+            document.addEventListener('click', (e) => {
+                const btn = e.target.closest('.btn-print');
+                if (btn && btn.dataset.situacao === 'FERIAS') {
+                    e.preventDefault();
+                    openVacationModal(btn.dataset.nome);
+                }
+            });
+        });
+    </script>
+
+    <!-- Vacation Alert Modal -->
+    <div id="vacationModal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white max-w-sm w-full p-8 rounded-3xl shadow-2xl border border-slate-100 text-center space-y-6 scale-95 opacity-0 transition-all duration-300 transform"
+                id="vacationModalContent">
+                <div
+                    class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-3xl mx-auto border-4 border-white shadow-inner">
+                    🌴
+                </div>
+                <div class="space-y-2">
+                    <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">Período de Férias</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">
+                        Não é possível gerar folha de ponto para <b id="vacationEmployeeName"
+                            class="text-slate-800"></b> pois o colaborador está afastado.
+                    </p>
+                </div>
+                <div class="pt-2">
+                    <button onclick="closeVacationModal()"
+                        class="w-full bg-slate-800 text-white font-bold py-3 rounded-2xl hover:bg-slate-900 transition-all shadow-[0_10px_20px_-10px_rgba(30,41,59,0.5)] uppercase text-[10px] tracking-widest">
+                        Entendido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card overflow-hidden mb-6">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider">
+                        <th class="px-6 py-4">Colaborador</th>
+                        <th class="px-6 py-4 text-center">Identificação</th>
+                        <th class="px-6 py-4">Cargo & Lotação</th>
+                        <th class="px-6 py-4 text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <% if (professionals.length===0) { %>
+                        <tr>
+                            <td colspan="4" class="py-12 text-center text-slate-400 italic">
+                                Nenhum colaborador encontrado.
+                            </td>
+                        </tr>
+                        <% } else { %>
+                            <% professionals.forEach(p=> { %>
+                                <tr class="hover:bg-slate-50/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <div
+                                                class="w-10 h-10 bg-brand-100 text-brand-600 rounded-lg flex items-center justify-center font-bold">
+                                                <%= (p.nome || '?' ).charAt(0).toUpperCase() %>
+                                            </div>
+                                            <div>
+                                                <div class="flex items-center gap-2">
+                                                    <div class="font-bold text-slate-900 uppercase">
+                                                        <%= p.nome || '-' %>
+                                                    </div>
+                                                    <% if (p.situacao==='FERIAS' ) { %>
+                                                        <span
+                                                            class="bg-amber-100 text-amber-700 text-[10px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider animate-pulse">🌴
+                                                            Férias</span>
+                                                        <% } %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <div class="text-xs font-bold text-slate-400 uppercase">Matrícula</div>
+                                        <div class="text-sm font-mono font-medium text-slate-600">
+                                            <%= p.matricula || '-' %>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="text-sm font-bold text-brand-700 uppercase tracking-tight">
+                                            <%= p.cargo || '-' %>
+                                        </div>
+                                        <div class="text-[10px] font-bold text-slate-400 uppercase">
+                                            <%= p.escala || 'NÃO INFORMADA' %>
+                                        </div>
+                                        <div class="text-xs text-slate-500 uppercase">
+                                            <%= p.unidade_lotacao || '-' %>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center justify-center space-x-2">
+                                            <a href="/timesheet/print?matricula=<%= p.matricula %>" target="_blank"
+                                                data-nome="<%= p.nome %>" data-situacao="<%= p.situacao %>"
+                                                title="Imprimir Folha"
+                                                class="btn-print p-2 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-all">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                                                    </path>
+                                                </svg>
+                                            </a>
+                                            <a href="/edit/<%= p.matricula %>" title="Editar"
+                                                class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                                    </path>
+                                                </svg>
+                                            </a>
+                                            <form action="/delete/<%= p.matricula %>" method="POST"
+                                                onsubmit="return confirm('Excluir este colaborador?');" class="inline">
+                                                <button type="submit" title="Excluir"
+                                                    class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                                        </path>
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination Tabs -->
+    <% if (pagination.total> 1) { %>
+        <div class="flex justify-center items-center gap-2 mb-10">
+            <% for(let i=1; i <=pagination.total; i++) { %>
+                <a href="/?page=<%= i %><%= searchQuery ? '&search=' + searchQuery : '' %><%= filters.unidade ? '&unidade=' + filters.unidade : '' %><%= filters.cargo ? '&cargo=' + filters.cargo : '' %><%= filters.escala ? '&escala=' + filters.escala : '' %>"
+                    class="w-10 h-10 flex items-center justify-center rounded-xl font-bold transition-all shadow-sm
+                   <%= pagination.current === i ? 'bg-brand-500 text-white shadow-brand-200' : 'bg-white text-slate-500 hover:bg-brand-50 hover:text-brand-600' %>">
+                    <%= i %>
+                </a>
+                <% } %>
+        </div>
+        <% } %>
+
+            <%- include('footer') %>

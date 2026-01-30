@@ -1,0 +1,180 @@
+<%- include('header') %>
+
+    <div class="max-w-3xl mx-auto">
+        <div class="mb-8">
+            <a href="/" class="text-brand-600 font-semibold flex items-center space-x-1 mb-2">
+                <span>&larr;</span> <span>Voltar</span>
+            </a>
+            <h1 class="text-3xl font-bold text-slate-800">Editar Cadastro</h1>
+            <p class="text-slate-500">Atualize as informações do colaborador abaixo.</p>
+        </div>
+
+        <div class="card">
+            <form action="/edit/<%= prof.matricula %>" method="POST" class="space-y-6">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2 space-y-1">
+                        <label class="block text-sm font-bold text-slate-700">Nome Completo</label>
+                        <input type="text" name="nome" value="<%= prof.nome %>" class="input-field" required>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-sm font-bold text-slate-700">Matrícula (ID Único)</label>
+                        <input type="text" name="matricula" value="<%= prof.matricula %>"
+                            class="input-field bg-slate-100" readonly>
+                        <p class="text-[10px] text-slate-400 mt-1">A matrícula não pode ser alterada para manter a
+                            integridade.</p>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-sm font-bold text-slate-700">Cargo / Função</label>
+                        <select name="cargo" class="input-field cursor-pointer">
+                            <option value="">Selecione...</option>
+                            <% settings.cargo.sort().forEach(item=> { %>
+                                <option value="<%= item %>" <%=prof.cargo===item ? 'selected' : '' %>><%= item %>
+                                </option>
+                                <% }) %>
+                        </select>
+                        <p class="text-[10px] text-slate-400">Cadastre novas opções em <a href="/settings"
+                                class="text-brand-600 hover:underline">Configurações</a></p>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-sm font-bold text-slate-700">Unidade de Lotação</label>
+                        <select name="unidade_lotacao" class="input-field cursor-pointer">
+                            <option value="">Selecione...</option>
+                            <% settings.unidade_lotacao.sort().forEach(item=> { %>
+                                <option value="<%= item %>" <%=prof.unidade_lotacao===item ? 'selected' : '' %>>
+                                    <%= item %>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-sm font-bold text-slate-700">Unidade Exercício</label>
+                        <select name="unidade_exercicio" class="input-field cursor-pointer">
+                            <option value="">Selecione...</option>
+                            <% settings.unidade_exercicio.sort().forEach(item=> { %>
+                                <option value="<%= item %>" <%=prof.unidade_exercicio===item ? 'selected' : '' %>><%=
+                                        item %>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-sm font-bold text-slate-700">Escala de Trabalho</label>
+                        <select name="escala" class="input-field cursor-pointer">
+                            <option value="">Selecione...</option>
+                            <% settings.escala.sort().forEach(item=> { %>
+                                <option value="<%= item %>" <%=prof.escala===item ? 'selected' : '' %>><%= item %>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-sm font-bold text-slate-700">Carga Horária (h/s)</label>
+                        <select name="carga_horaria" class="input-field cursor-pointer">
+                            <option value="">Selecione...</option>
+                            <% settings.carga_horaria.sort().forEach(item=> { %>
+                                <option value="<%= item %>" <%=prof.carga_horaria===item ? 'selected' : '' %>>
+                                    <%= item %>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-sm font-bold text-slate-700">E-Mail</label>
+                        <input type="email" name="email" value="<%= prof.email %>" class="input-field">
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-sm font-bold text-slate-700">Data de Nascimento</label>
+                        <input type="date" name="data_nascimento"
+                            value="<%= prof.data_nascimento ? new Date(prof.data_nascimento).toISOString().split('T')[0] : '' %>"
+                            class="input-field cursor-pointer">
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-sm font-bold text-slate-700">Telefone</label>
+                        <input type="tel" name="telefone" value="<%= prof.telefone %>" class="input-field"
+                            maxlength="15">
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-sm font-bold text-slate-700">Situação</label>
+                        <select name="situacao" class="input-field cursor-pointer">
+                            <option value="ATIVO" <%=(prof.situacao || 'ATIVO' )==='ATIVO' ? 'selected' : '' %>>ATIVO
+                            </option>
+                            <option value="FERIAS" <%=prof.situacao==='FERIAS' ? 'selected' : '' %>>EM FÉRIAS
+                            </option>
+                            <option value="INATIVO" <%=prof.situacao==='INATIVO' ? 'selected' : '' %>>INATIVO
+                                (DESLIGADO)</option>
+                        </select>
+                        <p class="text-[10px] text-slate-400 mt-1">Se marcado como FÉRIAS, o colaborador não aparecerá
+                            na impressão da folha de ponto.</p>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-slate-100 flex justify-end space-x-4">
+                    <a href="/" class="btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn-primary">Salvar Alterações</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Uppercase all inputs except email
+        document.querySelectorAll('input[type="text"], input[type="tel"]').forEach(input => {
+            if (input.name !== 'MATRICULA') { // Don't modify readonly matricula
+                input.style.textTransform = 'uppercase';
+                input.addEventListener('input', function (e) {
+                    const start = e.target.selectionStart;
+                    const end = e.target.selectionEnd;
+                    e.target.value = e.target.value.toUpperCase();
+                    e.target.setSelectionRange(start, end);
+                });
+            }
+        });
+
+        // Lowercase email
+        const emailInput = document.querySelector('input[type="email"]');
+        if (emailInput) {
+            emailInput.style.textTransform = 'lowercase';
+            emailInput.addEventListener('input', function (e) {
+                const start = e.target.selectionStart;
+                const end = e.target.selectionEnd;
+                e.target.value = e.target.value.toLowerCase();
+                e.target.setSelectionRange(start, end);
+            });
+        }
+
+        // Phone mask: (xx)xxxxx-xxxx
+        const phoneInput = document.querySelector('input[name="TELEFONE"]');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
+
+                if (value.length > 0) {
+                    if (value.length <= 2) {
+                        value = '(' + value;
+                    } else if (value.length <= 7) {
+                        value = '(' + value.slice(0, 2) + ')' + value.slice(2);
+                    } else if (value.length <= 11) {
+                        value = '(' + value.slice(0, 2) + ')' + value.slice(2, 7) + '-' + value.slice(7);
+                    } else {
+                        value = '(' + value.slice(0, 2) + ')' + value.slice(2, 7) + '-' + value.slice(7, 11);
+                    }
+                }
+
+                e.target.value = value;
+            });
+        }
+    </script>
+
+    <%- include('footer') %>

@@ -1,0 +1,170 @@
+<%- include('header') %>
+
+    <div class="max-w-3xl mx-auto">
+        <div class="mb-8">
+            <a href="/" class="text-brand-600 hover:text-brand-700 font-semibold flex items-center space-x-1 mb-4">
+                <span>&larr;</span> <span>Voltar para lista</span>
+            </a>
+            <h1 class="text-3xl font-bold text-slate-800">Novo Colaborador</h1>
+            <p class="text-slate-500">Preencha os dados abaixo para cadastrar no sistema.</p>
+        </div>
+
+        <div class="card">
+            <form action="/register" method="POST" class="space-y-6">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2 space-y-2">
+                        <label class="block text-sm font-bold text-slate-700">Nome Completo</label>
+                        <input type="text" name="nome" placeholder="Ex: João Silva" class="input-field" required>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-700">Matrícula</label>
+                        <input type="text" name="matricula" placeholder="XXXXXX" class="input-field" required>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-700">Cargo / Função</label>
+                        <select name="cargo" class="input-field cursor-pointer">
+                            <option value="">Selecione...</option>
+                            <% settings.cargo.sort().forEach(item=> { %>
+                                <option value="<%= item %>">
+                                    <%= item %>
+                                </option>
+                                <% }) %>
+                        </select>
+                        <p class="text-[10px] text-slate-400">Cadastre opções em <a href="/settings"
+                                class="text-brand-600 hover:underline">Configurações</a></p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-700">Unidade de Lotação</label>
+                        <select name="unidade_lotacao" class="input-field cursor-pointer">
+                            <option value="">Selecione...</option>
+                            <% settings.unidade_lotacao.sort().forEach(item=> { %>
+                                <option value="<%= item %>">
+                                    <%= item %>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-700">Unidade Exercício</label>
+                        <select name="unidade_exercicio" class="input-field cursor-pointer">
+                            <option value="">Selecione...</option>
+                            <% settings.unidade_exercicio.sort().forEach(item=> { %>
+                                <option value="<%= item %>">
+                                    <%= item %>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-700">Escala de Trabalho</label>
+                        <select name="escala" class="input-field cursor-pointer">
+                            <option value="">Selecione...</option>
+                            <% settings.escala.sort().forEach(item=> { %>
+                                <option value="<%= item %>">
+                                    <%= item %>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-700">Carga Horária (h/s)</label>
+                        <select name="carga_horaria" class="input-field cursor-pointer">
+                            <option value="">Selecione...</option>
+                            <% settings.carga_horaria.sort().forEach(item=> { %>
+                                <option value="<%= item %>">
+                                    <%= item %>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-700">E-Mail</label>
+                        <input type="email" name="email" placeholder="joao@email.com" class="input-field">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-700">Data de Nascimento</label>
+                        <input type="date" name="data_nascimento" class="input-field cursor-pointer">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-700">Telefone</label>
+                        <input type="tel" name="telefone" placeholder="(98)98765-4321" class="input-field"
+                            maxlength="15">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-slate-700">Situação Inicial</label>
+                        <select name="situacao" class="input-field cursor-pointer">
+                            <option value="ATIVO" selected>ATIVO</option>
+                            <option value="FERIAS">EM FÉRIAS</option>
+                            <option value="INATIVO">INATIVO (DESLIGADO)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-slate-100 flex justify-end space-x-4">
+                    <a href="/" class="btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn-primary">Salvar Cadastro</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Uppercase all inputs except email
+        document.querySelectorAll('input[type="text"], input[type="tel"]').forEach(input => {
+            input.style.textTransform = 'uppercase';
+            input.addEventListener('input', function (e) {
+                const start = e.target.selectionStart;
+                const end = e.target.selectionEnd;
+                e.target.value = e.target.value.toUpperCase();
+                e.target.setSelectionRange(start, end);
+            });
+        });
+
+        // Lowercase email
+        const emailInput = document.querySelector('input[type="email"]');
+        if (emailInput) {
+            emailInput.style.textTransform = 'lowercase';
+            emailInput.addEventListener('input', function (e) {
+                const start = e.target.selectionStart;
+                const end = e.target.selectionEnd;
+                e.target.value = e.target.value.toLowerCase();
+                e.target.setSelectionRange(start, end);
+            });
+        }
+
+        // Phone mask: (xx)xxxxx-xxxx
+        const phoneInput = document.querySelector('input[name="TELEFONE"]');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
+
+                if (value.length > 0) {
+                    if (value.length <= 2) {
+                        value = '(' + value;
+                    } else if (value.length <= 7) {
+                        value = '(' + value.slice(0, 2) + ')' + value.slice(2);
+                    } else if (value.length <= 11) {
+                        value = '(' + value.slice(0, 2) + ')' + value.slice(2, 7) + '-' + value.slice(7);
+                    } else {
+                        value = '(' + value.slice(0, 2) + ')' + value.slice(2, 7) + '-' + value.slice(7, 11);
+                    }
+                }
+
+                e.target.value = value;
+            });
+        }
+    </script>
+
+    <%- include('footer') %>

@@ -1,0 +1,129 @@
+<%- include('header') %>
+
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-slate-800">Configurações</h1>
+        <p class="text-slate-500">Gerencie as listas de opções para os formulários do sistema.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+
+        <!-- Institution Data Card -->
+        <div class="card space-y-4 md:col-span-2">
+            <h2 class="text-xl font-bold text-brand-700 uppercase tracking-tight border-b border-brand-50 pb-2">
+                Dados da Instituição (Cabeçalho da Folha)
+            </h2>
+            <form action="/settings/institution" method="POST" enctype="multipart/form-data"
+                class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">Nome da Instituição</label>
+                    <input type="text" name="nome" value="<%= settings.institution.nome %>" class="input-field py-2"
+                        required>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">CNPJ</label>
+                    <input type="text" name="cnpj" value="<%= settings.institution.cnpj %>" class="input-field py-2"
+                        required>
+                </div>
+                <div class="space-y-1 md:col-span-2">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">Endereço Completo e Contato</label>
+                    <input type="text" name="endereco" value="<%= settings.institution.endereco %>"
+                        class="input-field py-2" required>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">Logotipo da Unidade / Filial
+                        (PNG/JPG)</label>
+
+                    <div class="flex items-center gap-4 p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                        <% if (settings.institution.logotipo) { %>
+                            <div
+                                class="w-16 h-16 bg-white rounded-lg border border-slate-200 p-1 flex items-center justify-center shrink-0">
+                                <img src="<%= settings.institution.logotipo %>" alt="Logo"
+                                    class="max-w-full max-h-full object-contain">
+                            </div>
+                            <% } else { %>
+                                <div
+                                    class="w-16 h-16 bg-slate-100 rounded-lg border border-dashed border-slate-300 flex items-center justify-center shrink-0">
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase">Sem Logo</span>
+                                </div>
+                                <% } %>
+                                    <div class="flex-1">
+                                        <input type="file" name="logoFile" accept="image/*"
+                                            class="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 transition-all cursor-pointer">
+                                    </div>
+                    </div>
+
+                    <input type="hidden" name="logotipo" value="<%= settings.institution.logotipo %>">
+                </div>
+                <div class="flex items-end">
+                    <button type="submit" class="btn-primary w-full py-2 shadow-lg shadow-brand-100">Atualizar Dados do
+                        Cabeçalho</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Config Card Template Rendering -->
+        <% const categories=[ { id: 'UNIDADE_LOTACAO' , title: 'Unidades de Lotação' , items: settings.unidade_lotacao
+            }, { id: 'UNIDADE_EXERCICIO' , title: 'Unidades de Exercício' , items: settings.unidade_exercicio }, {
+            id: 'CARGO' , title: 'Cargos / Funções' , items: settings.cargo }, { id: 'CARGA_HORARIA' ,
+            title: 'Cargas Horárias' , items: settings.carga_horaria }, { id: 'ESCALA' , title: 'Escalas de Trabalho' ,
+            items: settings.escala } ]; %>
+
+            <% categories.forEach(cat=> { %>
+                <div class="card space-y-4">
+                    <h2 class="text-xl font-bold text-brand-700 uppercase tracking-tight border-b border-brand-50 pb-2">
+                        <%= cat.title %>
+                    </h2>
+
+                    <form action="/settings/add" method="POST" class="flex gap-2">
+                        <input type="hidden" name="tipo" value="<%= cat.id %>">
+                        <input type="text" name="valor" placeholder="Novo item..." class="input-field py-2" required>
+                        <button type="submit" class="btn-primary py-2 px-4">+</button>
+                    </form>
+
+                    <div class="space-y-2 max-h-60 overflow-y-auto pr-2">
+                        <% if (!cat.items || cat.items.length===0) { %>
+                            <p class="text-sm text-slate-400 italic py-4 text-center">Nenhum item cadastrado.</p>
+                            <% } else { %>
+                                <% cat.items.sort().forEach(item=> { %>
+                                    <div
+                                        class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100 hover:border-brand-200 transition-colors group">
+                                        <span class="text-slate-700 font-medium uppercase text-sm">
+                                            <%= item %>
+                                        </span>
+                                        <form action="/settings/delete" method="POST"
+                                            onsubmit="return confirm('Deseja excluir este item?');">
+                                            <input type="hidden" name="tipo" value="<%= cat.id %>">
+                                            <input type="hidden" name="valor" value="<%= item %>">
+                                            <button type="submit"
+                                                class="p-1.5 text-slate-300 hover:text-red-500 rounded-lg group-hover:bg-red-50 transition-all">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                                    </path>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <% }) %>
+                                        <% } %>
+                    </div>
+                </div>
+                <% }) %>
+
+    </div>
+
+    <script>
+        // Uppercase typing in settings
+        document.querySelectorAll('input[name="valor"]').forEach(input => {
+            input.addEventListener('input', function (e) {
+                const start = e.target.selectionStart;
+                const end = e.target.selectionEnd;
+                e.target.value = e.target.value.toUpperCase();
+                e.target.setSelectionRange(start, end);
+            });
+        });
+    </script>
+
+    <%- include('footer') %>
