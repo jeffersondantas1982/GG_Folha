@@ -62,16 +62,9 @@ Este projeto está licenciado sob a **Licença MIT** - veja o arquivo [LICENSE](
 
 **Desenvolvedor:**
 - **Jefferson Carvalho Dantas**
-- LinkedIn: [jeffersondantas](https://www.linkedin.com/in/jeffersondantas/)
-- WhatsApp: [+55 98 98125255](https://wa.me/559898125255)
-
-**Tester:**
-- **Carlos André de Santana**
-
-## 🏥 Instituição
-
-Desenvolvido em cooperação técnica:
-- **Hospital Presidente Vargas**
+- **Líder Técnico & Desenvolvedor Fullstack**: Jefferson C. Dantas
+- **Cooperação**: Carlos André ([LinkedIn](https://www.linkedin.com/in/carlosandre81/))
+- **Instituição de Origem**: Hospital Presidente Vargas (São Luís-MA)
 - Departamento de Informática
 - Recursos Humanos
 
