@@ -60,13 +60,10 @@ Este projeto está licenciado sob a **Licença MIT** - veja o arquivo [LICENSE](
 
 ## 👥 Equipe do Projeto
 
-**Desenvolvedor:**
-- **Jefferson Carvalho Dantas**
-- **Líder Técnico & Desenvolvedor Fullstack**: Jefferson C. Dantas
-- **Cooperação**: Carlos André ([LinkedIn](https://www.linkedin.com/in/carlosandre81/))
+- **Líder Técnico & Desenvolvedor Fullstack**: [Jefferson Carvalho Dantas](https://www.linkedin.com/in/jeffersondantas/)
+- **Cooperação Técnica**: [Carlos André](https://www.linkedin.com/in/carlosandre81/)
 - **Instituição de Origem**: Hospital Presidente Vargas (São Luís-MA)
-- Departamento de Informática
-- Recursos Humanos
+- Departamento de Informática & Recursos Humanos
 
 ---
 
